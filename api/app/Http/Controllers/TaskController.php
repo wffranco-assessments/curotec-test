@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskCreate;
+use App\Http\Requests\TaskUpdate;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,10 @@ class TaskController extends Controller
      */
     public function store(TaskCreate $request)
     {
-        return Task::create($request);
+        return Task::create([
+            'title' => $request->title,
+            'status' => $request->status,
+        ]);
     }
 
     /**
@@ -29,15 +33,18 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Task::find($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TaskUpdate $request, string $id)
     {
-        //
+        $task = Task::find($id);
+        $task->fill(['status' => $request->status])->save();
+
+        return $task;
     }
 
     /**
@@ -45,6 +52,6 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Task::destroy(+$id);
     }
 }
